@@ -122,26 +122,29 @@ namespace DTL.Util {
 
         }
 
-        public void Smooth(float[,] heightMap, uint iterationNum) {
+public void Smooth(float[,] heightMap, uint iterationNum, int maxR = 3) {
             // Height = height
             // Width = width
             // 周囲のマスと自分の高さから平均化
 
-            var dh = new[] { 1, -1, 0, 0 };
-            var dw = new[] { 0, 0, 1, -1 };
             for (int iter = 0; iter < iterationNum; ++iter) {
                 for (var h = 0; h < height; ++h) {
                     for (var w = 0; w < width; ++w) {
-                        // 配列の範囲内の8方向の高さを加算
+                        // 周囲r範囲を加算
+                        int r = UnityEngine.Random.Range(1, maxR);
                         var cumulative = 0;
                         float cumulativeValue = 0f;
-                        for (int i = 0; i < 4; ++i) {
-                            var nh = h + dh[i];
-                            var nw = w + dw[i];
+                        
+                        for (int x = r; x > -r; r--){
+                            for (int y = r; x > -r; r--){
+                                
+                                var nh = h + y;
+                                var nw = w + x;
 
-                            if (nh >= 0 && nw >= 0 && nh < height && nw < width) {
-                                ++cumulative;
-                                cumulativeValue += heightMap[nh, nw];
+                                if (nh >= 0 && nw >= 0 && nh < height && nw < width) {
+                                    ++cumulative;
+                                    cumulativeValue += heightMap[nh, nw];
+                                }
                             }
                         }
 
@@ -154,6 +157,7 @@ namespace DTL.Util {
                 }
             }
         }
+
 
         public TerrainUtil(Terrain terrain, List<Texture2D> texture2D, ITerrainDrawer terrainGenerator,
             int height, int width, int depth, uint smooth = 0) {

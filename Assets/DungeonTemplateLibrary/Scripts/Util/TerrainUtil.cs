@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DTL.Shape;
+using DTL.Random;
 
 namespace DTL.Util {
     public class TerrainUtil {
@@ -31,6 +32,8 @@ namespace DTL.Util {
 
         private List<Texture2D> texture2D;
         private ITerrainDrawer terrainGenerator;
+
+        private DTLRandom rand = new DTLRandom();
 
         public void Draw() {
             Generate();
@@ -122,7 +125,7 @@ namespace DTL.Util {
 
         }
 
-public void Smooth(float[,] heightMap, uint iterationNum, int maxR = 3) {
+        public void Smooth(float[,] heightMap, uint iterationNum, int maxR = 4, int minR = 1) {
             // Height = height
             // Width = width
             // 周囲のマスと自分の高さから平均化
@@ -131,7 +134,7 @@ public void Smooth(float[,] heightMap, uint iterationNum, int maxR = 3) {
                 for (var h = 0; h < height; ++h) {
                     for (var w = 0; w < width; ++w) {
                         // 周囲r範囲を加算
-                        int r = UnityEngine.Random.Range(1, maxR);
+                        int r = rand.Next(minR, maxR);
                         var cumulative = 0;
                         float cumulativeValue = 0f;
                         
